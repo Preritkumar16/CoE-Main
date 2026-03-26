@@ -56,7 +56,7 @@ flowchart TD
   API --> DB[(MySQL via Prisma)]
   API --> MAIL[SMTP Mailer]
   API --> OBJ[MinIO Object Storage]
-  CRON[Scheduler] --> REM[/api/cron/reminder]
+  CRON[Scheduler] --> REM["/api/cron/reminder"]
   REM --> API
 ```
 
