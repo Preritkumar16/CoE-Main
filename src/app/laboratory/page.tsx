@@ -10,60 +10,24 @@ export default function LaboratoryPage() {
 
   return (
     <>
-      {/* TopNoticeTicker */}
-      <div className="bg-[#fd9923] flex items-center px-6 py-2 w-full z-[60] fixed top-0 border-none font-['Inter'] text-xs font-bold uppercase tracking-wider text-white overflow-hidden whitespace-nowrap">
-        <span className="mr-4 flex-shrink-0">🔔 Notice:</span>
-        <div className="overflow-hidden w-full">
-          <span className="inline-block animate-[marquee_30s_linear_infinite]">
-            Latest announcements and updates for TCET Center of Excellence — New Lab Equipment Procurement for FY 2024-25 — Grant Application Window Closing Soon.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Latest announcements and updates for TCET Center of Excellence — New Lab Equipment Procurement for FY 2024-25 — Grant Application Window Closing Soon.
-          </span>
-        </div>
-      </div>
 
-      {/* TopNavBar */}
-      <header className="bg-[#002155] flex justify-between items-center w-full px-8 py-4 z-50 fixed top-[32px] border-none">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-white tracking-tighter uppercase font-['Inter']">TCET CoE</h1>
-        </div>
-        <nav className="hidden md:flex items-center gap-8">
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/">Home</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/about">About</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Research</Link>
-          <Link className="text-[#fd9923] font-bold border-b-2 border-[#fd9923] pb-1 text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/laboratory">Laboratory</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Events</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Grants</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">News</Link>
-          <Link className="bg-[#8c4f00] px-4 py-2 text-white font-['Inter'] text-[10px] font-black uppercase tracking-widest hover:bg-[#6b3b00] transition-colors" href="/facility-booking">Book Facility</Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center border border-[#747782] px-3 py-1 bg-[#003580]">
-            <span className="material-symbols-outlined text-white text-sm">search</span>
-            <input
-              className="bg-transparent border-none text-[10px] text-white placeholder:text-white/50 focus:outline-none w-32 font-['Inter'] uppercase"
-              placeholder="SEARCH ARCHIVES..."
-              type="text"
-            />
-          </div>
-        </div>
-      </header>
-
-      <main className="pt-[80px] pb-20 max-w-7xl mx-auto px-8">
+      <main className="pt-[100px] md:pt-[120px] pb-20 max-w-7xl mx-auto px-4 md:px-8">
         {/* Hero Section */}
-        <section className="mb-16 border-l-4 border-[#002155] pl-8 py-4 mt-8">
-          <h2 className="text-[40px] font-headline tracking-tight leading-none mb-4">Laboratory Infrastructure &amp; Research Facilities</h2>
+        <section className="mb-4 md:mb-8 md:mb-16 border-l-4 border-[#002155] pl-4 md:pl-8 py-4 mt-8">
+          <h2 className="text-3xl md:text-[40px] font-headline tracking-tight leading-none mb-4">Laboratory Infrastructure &amp; Research Facilities</h2>
           <p className="max-w-3xl text-lg text-[#434651] font-body leading-relaxed">
             The TCET Center of Excellence houses state-of-the-art computational and experimental environments designed for high-impact multidisciplinary research. Our facilities serve as the bedrock for innovation in Electronics, Fabrication, and Advanced Computing.
           </p>
         </section>
 
         {/* Equipment Filter */}
-        <section className="mb-12">
+        <section className="mb-4 md:mb-8 md:mb-12">
           <div className="flex flex-wrap gap-1 border-b border-[#c4c6d3] pb-px">
             {filters.map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-8 py-3 font-['Inter'] text-xs font-bold uppercase tracking-wider transition-all ${
+                className={`px-4 md:px-8 py-3 font-['Inter'] text-xs font-bold uppercase tracking-wider transition-all ${
                   activeFilter === filter
                     ? "bg-[#002155] text-white"
                     : "bg-[#e9e8e4] text-[#434651] hover:bg-[#e3e2df]"
@@ -136,8 +100,8 @@ export default function LaboratoryPage() {
         </section>
 
         {/* Facilities List */}
-        <section className="mb-8">
-          <div className="flex items-center gap-4 mb-8">
+        <section className="mb-4 md:mb-8">
+          <div className="flex items-center gap-4 mb-4 md:mb-8">
             <div className="h-[1px] flex-grow bg-[#c4c6d3]"></div>
             <h2 className="text-sm font-['Inter'] font-black uppercase tracking-[0.2em] text-[#002155]">Specialized Research Facilities</h2>
             <div className="h-[1px] flex-grow bg-[#c4c6d3]"></div>
@@ -162,52 +126,6 @@ export default function LaboratoryPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#f5f4f0] text-[#002155] border-t-4 border-[#002155] mt-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full px-12 py-16 max-w-full">
-          <div className="space-y-6">
-            <div className="text-lg font-bold text-[#002155] uppercase font-['Inter']">TCET Center of Excellence</div>
-            <p className="font-body leading-relaxed opacity-80 text-sm">
-              Thakur College of Engineering and Technology,<br />
-              A-Block, Thakur Educational Campus,<br />
-              Shyamnarayan Thakur Marg, Thakur Village,<br />
-              Kandivali (E), Mumbai - 400101.
-            </p>
-            <div className="flex gap-4">
-              <span className="material-symbols-outlined">location_on</span>
-              <span className="material-symbols-outlined">mail</span>
-              <span className="material-symbols-outlined">phone</span>
-            </div>
-          </div>
-          <div className="space-y-6">
-            <h4 className="text-sm font-black uppercase tracking-widest border-b border-[#c4c6d3] pb-2">Institutional Links</h4>
-            <ul className="space-y-3 text-sm font-body">
-              <li><a className="text-slate-600 hover:text-[#002155] underline transition-colors" href="#">Institute Address &amp; NAAC</a></li>
-              <li><a className="text-slate-600 hover:text-[#002155] underline transition-colors" href="#">Mumbai University</a></li>
-              <li><a className="text-slate-600 hover:text-[#002155] underline transition-colors" href="#">Quick Links</a></li>
-              <li><a className="text-slate-600 hover:text-[#002155] underline transition-colors" href="#">Privacy Policy</a></li>
-            </ul>
-          </div>
-          <div className="space-y-6">
-            <h4 className="text-sm font-black uppercase tracking-widest border-b border-[#c4c6d3] pb-2">Facility Access</h4>
-            <p className="text-sm font-body leading-relaxed opacity-80 mb-4">
-              Researchers and students from external institutions can apply for facility usage through our centralized booking system.
-            </p>
-            <Link className="inline-block bg-[#002155] text-white px-6 py-2 font-['Inter'] text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity" href="/facility-booking">
-              Request Lab Access
-            </Link>
-          </div>
-        </div>
-        <div className="bg-[#002155] py-4 px-12 text-white/60 text-[10px] font-['Inter'] uppercase tracking-widest flex justify-between items-center">
-          <span>© 2024 TCET Center of Excellence. All Rights Reserved.</span>
-          <button
-            className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            Back to Top <span className="material-symbols-outlined text-xs">arrow_upward</span>
-          </button>
-        </div>
-      </footer>
     </>
   );
 }

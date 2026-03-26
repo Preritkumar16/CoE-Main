@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
 export const metadata: Metadata = {
   title: "TCET Center of Excellence | Official Portal",
   description: "TCET Center of Excellence - Bridging academic theory and industrial application through rigorous research and development.",
@@ -23,7 +26,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-surface font-body text-on-surface">{children}</body>
+      <body className="bg-surface font-body text-on-surface">
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

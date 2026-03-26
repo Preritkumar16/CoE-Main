@@ -5,53 +5,11 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <>
-      {/* TopNoticeTicker */}
-      <div className="bg-[#fd9923] flex items-center px-6 py-2 w-full z-[60] fixed top-0 border-none font-['Inter'] text-xs font-bold uppercase tracking-wider text-white marquee-scroll cursor-pointer">
-        <span className="whitespace-nowrap flex items-center gap-2">
-          <span className="material-symbols-outlined text-sm">notifications</span>
-          🔔 Notice:
-        </span>
-        <div className="marquee-content">
-          <span>Latest announcements and updates for TCET Center of Excellence — Call for Research Proposals 2024 is now open.</span>
-          <span>Upcoming Workshop: Advanced Computing Architectures on Oct 25th.</span>
-          <span>New High-Performance Computing Lab inaugurated by Hon. Director.</span>
-        </div>
-      </div>
-
-      {/* TopNavBar */}
-      <nav className="bg-[#002155] flex justify-between items-center w-full px-8 py-4 z-50 fixed top-[32px] border-none">
-        <div className="flex items-center gap-4">
-          <div className="text-xl font-bold text-white tracking-tighter uppercase flex flex-col leading-tight">
-            <span className="font-headline italic text-2xl">TCET</span>
-            <span className="text-xs tracking-widest font-label opacity-80">Center of Excellence</span>
-          </div>
-        </div>
-        <div className="hidden lg:flex items-center gap-8">
-          <Link className="text-[#fd9923] font-bold border-b-2 border-[#fd9923] pb-1 text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/">Home</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/about">About</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Research</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/laboratory">Laboratory</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Events</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">Grants</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="#">News</Link>
-          <Link className="text-white opacity-80 hover:opacity-100 hover:text-[#fd9923] transition-all text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/facility-booking">Book Facility</Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <input
-              className="bg-[#003580] text-white text-xs border-none px-4 py-2 w-48 placeholder:text-blue-300 focus:ring-1 focus:ring-[#fd9923] outline-none"
-              placeholder="Search Archives..."
-              type="text"
-            />
-            <span className="material-symbols-outlined absolute right-2 top-1.5 text-white text-lg">search</span>
-          </div>
-        </div>
-      </nav>
 
       {/* Main Content Layout */}
-      <main className="max-w-[1440px] mx-auto grid grid-cols-12 gap-0 min-h-screen pt-[80px]">
+      <main className="max-w-[1440px] mx-auto grid grid-cols-12 gap-0 min-h-screen pt-[100px] md:pt-[120px]">
         {/* Left Margin / Vertical Nav Indication */}
-        <div className="hidden md:flex col-span-1 border-r border-[#c4c6d3] items-start justify-center pt-24 bg-[#f5f4f0]">
+        <div className="hidden md:flex col-span-1 border-r border-[#c4c6d3] items-start justify-center pt-12 md:pt-24 bg-[#f5f4f0]">
           <div className="rotate-180 [writing-mode:vertical-lr] flex items-center gap-6 text-[#002155] opacity-40 font-['Inter'] text-[10px] tracking-[0.3em] uppercase">
             <span>ESTABLISHED 2001</span>
             <span className="w-12 h-[1px] bg-[#002155]"></span>
@@ -60,9 +18,9 @@ export default function HomePage() {
         </div>
 
         {/* Central Column */}
-        <div className="col-span-12 md:col-span-8 p-8 lg:p-12">
+        <div className="col-span-12 md:col-span-8 p-4 md:p-8 lg:p-6 md:p-12">
           {/* Banner Section */}
-          <section className="mb-12">
+          <section className="mb-4 md:mb-8 md:mb-12">
             <div className="bg-[#e3e2df] aspect-[21/9] w-full overflow-hidden relative border border-[#c4c6d3]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -77,7 +35,7 @@ export default function HomePage() {
           </section>
 
           {/* Stats Counter Row */}
-          <section className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 border-y border-[#c4c6d3] py-8">
+          <section className="grid grid-cols-2 md:grid-cols-4 gap-4 md:p-8 mb-4 md:mb-8 md:mb-16 border-y border-[#c4c6d3] py-8">
             <div className="text-center md:text-left">
               <div className="text-[#002155] font-headline text-3xl font-bold">12</div>
               <div className="text-xs font-['Inter'] uppercase tracking-widest text-[#747782]">Research Projects</div>
@@ -97,12 +55,12 @@ export default function HomePage() {
           </section>
 
           {/* About Section */}
-          <section className="mb-16">
-            <div className="border-l-4 border-[#002155] pl-6 mb-8">
+          <section className="mb-4 md:mb-8 md:mb-16">
+            <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-4 md:mb-8">
               <h2 className="font-headline text-3xl text-[#002155] tracking-tight">Institutional Mandate</h2>
               <p className="text-xs font-['Inter'] uppercase tracking-widest text-[#8c4f00] mt-1">Foundational Pillars of Excellence</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:p-12">
               <div className="space-y-4">
                 <p className="font-body text-[#1b1c1a] leading-relaxed">
                   The TCET Center of Excellence (CoE) serves as the vanguard of technological advancement at Thakur College of Engineering &amp; Technology. Our mission is to bridge the gap between academic theory and industrial application through rigorous research and development.
@@ -139,8 +97,8 @@ export default function HomePage() {
           </section>
 
           {/* News & Press Section */}
-          <section className="mb-16">
-            <div className="border-l-4 border-[#002155] pl-6 mb-8 flex justify-between items-end">
+          <section className="mb-4 md:mb-8 md:mb-16">
+            <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-4 md:mb-8 flex justify-between items-end">
               <div>
                 <h2 className="font-headline text-3xl text-[#002155] tracking-tight">In the Press</h2>
                 <p className="text-xs font-['Inter'] uppercase tracking-widest text-[#8c4f00] mt-1">Institutional News & Media</p>
@@ -149,7 +107,7 @@ export default function HomePage() {
                 View All News →
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:p-8">
               {/* News Item 1 */}
               <div className="border border-[#c4c6d3] bg-white group cursor-pointer hover:shadow-lg transition-all duration-300">
                 <div className="w-full h-48 bg-[#efeeea] overflow-hidden relative border-b border-[#c4c6d3]">
@@ -169,7 +127,7 @@ export default function HomePage() {
                     TCET Inaugurates Advanced AI Computing Center of Excellence
                   </h3>
                   <p className="text-sm text-[#434651] font-body line-clamp-2">
-                    Highlighting the institution's commitment to cutting edge research with the introduction of new lab facilities...
+                    Highlighting the institution&apos;s commitment to cutting edge research with the introduction of new lab facilities...
                   </p>
                 </div>
               </div>
@@ -227,7 +185,7 @@ export default function HomePage() {
           {/* Grants Section */}
           <section className="space-y-16 mt-16 pb-12">
             <div>
-              <div className="border-l-4 border-[#002155] pl-6 mb-8">
+              <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-4 md:mb-8">
                 <h2 className="text-3xl font-headline tracking-tight text-[#002155]">Current Grant Opportunities</h2>
                 <p className="text-sm font-['Inter'] text-[#747782] uppercase tracking-widest mt-1">Research Funding &amp; Fellowships 2024</p>
               </div>
@@ -272,7 +230,7 @@ export default function HomePage() {
             </div>
 
             <div>
-              <div className="border-l-4 border-[#002155] pl-6 mb-8">
+              <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-4 md:mb-8">
                 <h2 className="text-3xl font-headline tracking-tight text-[#002155]">Funding Agencies Directory</h2>
                 <p className="text-sm font-['Inter'] text-[#747782] uppercase tracking-widest mt-1">Institutional Liaisons &amp; Portals</p>
               </div>
@@ -319,7 +277,7 @@ export default function HomePage() {
         </div>
 
         {/* Sidebar */}
-        <aside className="col-span-12 md:col-span-3 border-l border-[#c4c6d3] bg-[#f5f4f0] min-h-full">
+        <aside className="col-span-12 md:col-span-3 border-t md:border-t-0 md:border-l border-[#c4c6d3] bg-[#f5f4f0] min-h-full">
           <div className="sticky top-[80px]">
             {/* Circulars Box */}
             <div className="p-6">
@@ -377,41 +335,6 @@ export default function HomePage() {
         </aside>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#f5f4f0] text-[#002155] grid grid-cols-1 md:grid-cols-3 gap-12 w-full px-12 py-16 max-w-full border-t-4 border-[#002155]">
-        <div>
-          <h3 className="text-lg font-bold text-[#002155] mb-6 uppercase tracking-tight">TCET Center of Excellence</h3>
-          <p className="font-body leading-relaxed opacity-70 text-sm">
-            Thakur Village, Kandivali (E), Mumbai - 400101.<br />
-            Maharashtra, India.<br /><br />
-            Email: coe@tcetmumbai.in<br />
-            Phone: +91 22 6730 8000
-          </p>
-        </div>
-        <div>
-          <h4 className="text-xs font-bold uppercase tracking-widest text-[#8c4f00] mb-6">Institutional Quick Links</h4>
-          <ul className="space-y-3 text-sm font-body">
-            <li><a className="text-slate-600 hover:text-[#002155] underline transition-all" href="#">Institute Address &amp; NAAC</a></li>
-            <li><a className="text-slate-600 hover:text-[#002155] underline transition-all" href="#">Mumbai University</a></li>
-            <li><a className="text-slate-600 hover:text-[#002155] underline transition-all" href="#">Quick Links</a></li>
-            <li><a className="text-slate-600 hover:text-[#002155] underline transition-all" href="#">Privacy Policy</a></li>
-            <li><a className="text-slate-600 hover:text-[#002155] underline transition-all" href="#">Contact Us</a></li>
-          </ul>
-        </div>
-        <div className="flex flex-col justify-between">
-          <div className="flex flex-col gap-4">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-[#8c4f00]">Accreditation</h4>
-            <div className="flex gap-4">
-              <div className="w-12 h-12 bg-white/50 border border-[#c4c6d3] flex items-center justify-center font-bold text-[10px] text-center p-1">NAAC A+</div>
-              <div className="w-12 h-12 bg-white/50 border border-[#c4c6d3] flex items-center justify-center font-bold text-[10px] text-center p-1">NBA</div>
-              <div className="w-12 h-12 bg-white/50 border border-[#c4c6d3] flex items-center justify-center font-bold text-[10px] text-center p-1">ISO</div>
-            </div>
-          </div>
-          <p className="text-[10px] opacity-60 mt-8">
-            © 2024 TCET Center of Excellence. All Rights Reserved. Designed for Academic Integrity.
-          </p>
-        </div>
-      </footer>
     </>
   );
 }

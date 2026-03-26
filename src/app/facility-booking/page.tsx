@@ -1,203 +1,297 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
 export default function FacilityBookingPage() {
-  const [activeRole, setActiveRole] = useState("Faculty");
-  const roles = ["Faculty", "Researcher", "PG Student", "External"];
+  const [step, setStep] = useState(1);
+  
+  // Login State
+  const [email, setEmail] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // Role State
+  const [role, setRole] = useState("Faculty");
+  const roles = ["Student", "Faculty", "Researcher"];
+  
+  // Form State
+  const [purpose, setPurpose] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [lab, setLab] = useState("");
+  const [equipment, setEquipment] = useState<string[]>([]);
+  
+  const availableLabs = [
+    "Advanced VLSI Lab",
+    "HPC Cluster Node",
+    "Precision Fab Lab",
+    "Data Science Hub"
+  ];
+  
+  const availableEquipment = [
+    "NVIDIA DGX-A100",
+    "Digital Oscilloscope",
+    "Ultimaker S5 Pro",
+    "Logic Analyzer"
+  ];
+  const timeSlots = ["09:00 - 11:00", "11:00 - 13:00", "13:00 - 15:00", "15:00 - 17:00", "17:00 - 19:00"];
+
+  const handleSendOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.endsWith("@tcetmumbai.in")) {
+      setEmailError("Access restricted to @tcetmumbai.in institutional email domains.");
+      return;
+    }
+    setEmailError("");
+    setOtpSent(true);
+  };
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep(2);
+  };
+  
+  const handleToggleEquipment = (item: string) => {
+    if (equipment.includes(item)) {
+      setEquipment(equipment.filter(e => e !== item));
+    } else {
+      setEquipment([...equipment, item]);
+    }
+  };
 
   return (
-    <>
-      {/* TopNoticeTicker */}
-      <div className="bg-[#fd9923] flex items-center px-6 py-2 w-full z-[60] overflow-hidden whitespace-nowrap">
-        <span className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-white mr-4 flex-shrink-0">
-          🔔 Notice:
-        </span>
-        <div className="overflow-hidden relative w-full">
-          <span className="inline-block animate-[marquee_30s_linear_infinite] text-white font-['Inter'] text-xs font-bold uppercase tracking-wider opacity-90 hover:opacity-100 transition-opacity">
-            Latest announcements and updates for TCET Center of Excellence — Facility booking window for Q4 is now open for research scholars.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Latest announcements and updates for TCET Center of Excellence — Facility booking window for Q4 is now open for research scholars.
-          </span>
+    <main className="max-w-7xl mx-auto px-4 md:px-8 pt-[120px] pb-12 min-h-screen">
+      {/* Header Section */}
+      <header className="mb-8 md:mb-12 border-l-4 border-[#002155] pl-4 md:pl-6">
+        <h1 className="font-headline text-3xl md:text-[40px] font-bold tracking-tight text-[#002155] leading-none">
+          Research Facility Reservation
+        </h1>
+        <p className="mt-2 text-[#434651] max-w-2xl font-body">
+          Institutional access to advanced laboratories, high-performance computing clusters, and specialized analytical equipment for academic excellence.
+        </p>
+      </header>
+
+      {/* Stepper Component */}
+      <div className="flex flex-wrap items-center gap-4 mb-8 md:mb-12 border-b border-[#c4c6d3] pb-6">
+        <div className="flex items-center gap-3">
+          <span className={`font-['Roboto'] font-bold ${step >= 1 ? "text-[#fd9923]" : "text-[#747782]"}`}>01 Identity</span>
+          <div className={`h-px w-8 ${step >= 2 ? "bg-[#fd9923]" : "bg-[#c4c6d3]"}`}></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`font-['Roboto'] font-bold ${step >= 2 ? "text-[#fd9923]" : "text-[#747782]"}`}>02 Profile</span>
+          <div className={`h-px w-8 ${step >= 3 ? "bg-[#fd9923]" : "bg-[#c4c6d3]"}`}></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`font-['Roboto'] font-bold ${step >= 3 ? "text-[#fd9923]" : "text-[#747782]"}`}>03 Book</span>
+          <div className={`h-px w-8 ${step >= 4 ? "bg-[#fd9923]" : "bg-[#c4c6d3]"}`}></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`font-['Roboto'] font-bold ${step >= 4 ? "text-[#002155]" : "text-[#747782]"}`}>04 Confirm</span>
         </div>
       </div>
 
-      {/* TopNavBar */}
-      <nav className="bg-[#002155] flex justify-between items-center w-full px-8 py-4 z-50 sticky top-0">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-white flex items-center justify-center">
-            <span className="text-[#002155] font-black text-xl">TC</span>
-          </div>
-          <span className="text-xl font-bold text-white tracking-tighter">TCET CoE</span>
-        </div>
-        <div className="hidden md:flex items-center gap-8">
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="/">Home</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="/about">About</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="#">Research</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="/laboratory">Laboratory</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="#">Events</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="#">Grants</Link>
-          <Link className="text-white opacity-80 text-xs font-['Inter'] uppercase tracking-[0.05rem] hover:opacity-100 hover:text-[#fd9923] transition-all" href="#">News</Link>
-          <Link className="text-[#fd9923] font-bold border-b-2 border-[#fd9923] pb-1 text-xs font-['Inter'] uppercase tracking-[0.05rem]" href="/facility-booking">Book Facility</Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center border border-[#c4c6d3] bg-white/10 px-3 py-1.5">
-            <span className="material-symbols-outlined text-white text-sm">search</span>
-            <input
-              className="bg-transparent border-none text-white text-xs placeholder:text-white/50 focus:outline-none w-32"
-              placeholder="Search Archives..."
-              type="text"
-            />
-          </div>
-          <span className="material-symbols-outlined text-white cursor-pointer">menu</span>
-        </div>
-      </nav>
-
-      {/* Main Content Canvas */}
-      <main className="max-w-7xl mx-auto px-8 py-12 min-h-screen">
-        {/* Header Section */}
-        <header className="mb-12 border-l-4 border-[#002155] pl-6">
-          <h1 className="font-headline text-[40px] font-bold tracking-tight text-[#002155] leading-none">
-            Research Facility Reservation
-          </h1>
-          <p className="mt-2 text-[#434651] max-w-2xl font-body">
-            Institutional access to advanced laboratories, high-performance computing clusters, and specialized analytical equipment for academic excellence.
-          </p>
-        </header>
-
-        {/* Stepper Component */}
-        <div className="flex flex-wrap items-center gap-8 mb-12 border-b border-[#c4c6d3] pb-6">
-          <div className="flex items-center gap-3">
-            <span className="font-['Roboto'] font-bold text-[#fd9923]">01 Verify</span>
-            <div className="h-px w-8 bg-[#c4c6d3]"></div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="font-['Roboto'] font-medium text-[#747782]">02 Profile</span>
-            <div className="h-px w-8 bg-[#c4c6d3]"></div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="font-['Roboto'] font-medium text-[#747782]">03 Book</span>
-            <div className="h-px w-8 bg-[#c4c6d3]"></div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="font-['Roboto'] font-medium text-[#747782]">04 Confirm</span>
-          </div>
-        </div>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Column: Form Content */}
-          <section className="lg:col-span-8 space-y-12">
-            {/* Step 1: Verification (Active) */}
-            <div className="bg-white border border-[#c4c6d3] p-10">
-              <h2 className="font-headline text-2xl font-bold text-[#002155] mb-8">
-                Verification of Credentials
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Form Content */}
+        <section className="lg:col-span-8 space-y-12">
+          
+          {/* STEP 1: LOGIN */}
+          {step === 1 && (
+            <div className="bg-white border border-[#c4c6d3] p-6 md:p-10 animate-fade-in">
+              <h2 className="font-headline text-2xl font-bold text-[#002155] mb-2">
+                Authentication Required
               </h2>
-              <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <p className="text-sm font-body text-[#747782] mb-8">
+                Only verified TCET faculty, students, and researchers can book facilities.
+              </p>
+              
+              {!otpSent ? (
+                <form className="space-y-6 max-w-md" onSubmit={handleSendOtp}>
                   <div className="flex flex-col gap-2">
                     <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
-                      Institutional ID Number
+                      Institutional Email
                     </label>
                     <input
-                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-3 text-sm outline-none"
-                      placeholder="e.g. TCET-2024-RE-01"
-                      type="text"
+                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-3 text-sm outline-none transition-all placeholder:text-[#c4c6d3]"
+                      placeholder="e.g. aditya.shah@tcetmumbai.in"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                       style={{ borderRadius: 0 }}
                     />
+                    {emailError && <p className="text-red-600 text-xs font-['Inter'] mt-1">{emailError}</p>}
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-[#002155] w-full text-white px-6 py-4 font-['Inter'] text-sm font-bold uppercase tracking-widest hover:bg-[#1a438e] transition-colors"
+                  >
+                    Send OTP Verification
+                  </button>
+                </form>
+              ) : (
+                <form className="space-y-6 max-w-md" onSubmit={handleVerifyOtp}>
+                  <div className="p-4 bg-[#f5f4f0] border border-[#c4c6d3] mb-6 flex items-start gap-3">
+                    <span className="material-symbols-outlined text-[#8c4f00] text-xl">mark_email_read</span>
+                    <div>
+                      <p className="text-xs font-bold text-[#002155] uppercase font-['Inter']">OTP Sent</p>
+                      <p className="text-xs text-[#434651]">A secure code has been sent to {email}</p>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
-                      Department
+                      Enter 6-Digit OTP
                     </label>
-                    <select
-                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-3 text-sm outline-none"
+                    <input
+                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-4 text-center text-xl tracking-[0.5em] outline-none font-bold placeholder:text-[#e3e2df]"
+                      placeholder="------"
+                      type="text"
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      required
                       style={{ borderRadius: 0 }}
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setOtpSent(false)}
+                      className="border border-[#c4c6d3] text-[#434651] px-6 py-4 font-['Inter'] text-sm font-bold uppercase tracking-widest hover:border-[#002155] transition-colors"
                     >
-                      <option>Computer Engineering</option>
-                      <option>Electronics &amp; Telecommunication</option>
-                      <option>Information Technology</option>
-                      <option>Artificial Intelligence &amp; Data Science</option>
-                    </select>
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#002155] flex-grow text-white px-6 py-4 font-['Inter'] text-sm font-bold uppercase tracking-widest hover:bg-[#1a438e] transition-colors"
+                    >
+                      Verify Login
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* STEP 2: PROFILE/ROLE */}
+          {step === 2 && (
+            <div className="bg-white border border-[#c4c6d3] p-6 md:p-10 animate-fade-in">
+              <h2 className="font-headline text-2xl font-bold text-[#002155] mb-8">
+                Confirm Institutional Profile
+              </h2>
+              <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); setStep(3); }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#f5f4f0] p-6 border border-[#c4c6d3]">
+                  <div>
+                    <p className="text-[10px] font-['Inter'] text-[#747782] uppercase tracking-widest mb-1">Authenticated Account</p>
+                    <p className="font-bold text-[#002155]">{email.split("@")[0].replace(".", " ").toUpperCase()}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-['Inter'] text-[#747782] uppercase tracking-widest mb-1">Email Address</p>
+                    <p className="font-medium text-[#434651]">{email}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-['Inter'] text-[#747782] uppercase tracking-widest mb-1">Contact Status</p>
+                    <p className="font-medium text-green-700 flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">verified</span> Verified</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
-                    Institutional Role
+                  <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651] flex items-center gap-2">
+                    Confirm Designation <span className="text-red-500">*</span>
                   </label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {roles.map((role) => (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {roles.map((r) => (
                       <button
-                        key={role}
+                        key={r}
                         type="button"
-                        onClick={() => setActiveRole(role)}
-                        className={`border py-3 text-xs font-bold uppercase tracking-wider transition-colors ${
-                          activeRole === role
-                            ? "border-[#002155] bg-[#002155] text-white"
+                        onClick={() => setRole(r)}
+                        className={`border py-4 px-4 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-between ${
+                          role === r
+                            ? "border-[#002155] bg-[#002155] text-white shadow-md transform -translate-y-1"
                             : "border-[#c4c6d3] text-[#434651] hover:border-[#002155]"
                         }`}
                       >
-                        {role}
+                        {r}
+                        {role === r && <span className="material-symbols-outlined text-sm">check_circle</span>}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-4 flex justify-between items-center border-t border-[#c4c6d3] mt-8 pt-8">
+                  <button type="button" onClick={() => setStep(1)} className="text-xs font-bold uppercase tracking-widest text-[#434651] hover:text-[#002155] underline">Back to Login</button>
                   <button
                     type="submit"
                     className="bg-[#002155] text-white px-8 py-4 font-['Inter'] text-sm font-bold uppercase tracking-widest hover:bg-[#1a438e] transition-colors inline-flex items-center gap-2"
                   >
-                    Verify &amp; Continue
+                    Continue to Booking
                     <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   </button>
                 </div>
               </form>
             </div>
+          )}
 
-            {/* Step 3 Preview: Slot Selection */}
-            <div className="bg-[#f5f4f0] border border-[#c4c6d3] p-10 opacity-60 pointer-events-none select-none">
-              <h2 className="font-headline text-2xl font-bold text-[#002155] mb-8">
-                Resource Scheduling
-              </h2>
-              <div className="space-y-6">
-                <div className="flex flex-col gap-2">
-                  <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
-                    Select Laboratory Facility
-                  </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white border border-[#c4c6d3] p-4 flex items-center gap-4">
-                      <div className="w-12 h-12 bg-[#efeeea] flex items-center justify-center">
-                        <span className="material-symbols-outlined text-[#002155]">biotech</span>
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm">Advanced VLSI Lab</p>
-                        <p className="text-[10px] uppercase text-[#434651]">Block A - Room 402</p>
-                      </div>
-                    </div>
-                    <div className="bg-white border-2 border-[#002155] p-4 flex items-center gap-4">
-                      <div className="w-12 h-12 bg-[#002155] flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white">memory</span>
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm">HPC Cluster Node</p>
-                        <p className="text-[10px] uppercase text-[#434651]">Data Center - Floor 2</p>
-                      </div>
-                    </div>
+          {/* STEP 3: BOOKING FORM */}
+          {step === 3 && (
+            <div className="bg-white border border-[#c4c6d3] p-6 md:p-10 animate-fade-in shadow-sm">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="font-headline text-2xl font-bold text-[#002155]">
+                  Resource Scheduling
+                </h2>
+                <span className="text-[10px] font-['Inter'] font-bold text-[#8c4f00] uppercase tracking-widest bg-[#f5f4f0] px-3 py-1 border border-[#c4c6d3]">
+                  {role} Access
+                </span>
+              </div>
+              
+              <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); setStep(4); }}>
+                {/* Lab & Date */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
+                      Target Laboratory <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-3 text-sm outline-none cursor-pointer"
+                      value={lab}
+                      onChange={(e) => setLab(e.target.value)}
+                      required
+                      style={{ borderRadius: 0 }}
+                    >
+                      <option value="" disabled>Select a facility...</option>
+                      {availableLabs.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
+                      Date of Visit <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-3 text-sm outline-none cursor-text"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      required
+                      style={{ borderRadius: 0 }}
+                    />
                   </div>
                 </div>
+
+                {/* Time Slots */}
                 <div className="space-y-4">
                   <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
-                    Available Time Slots
+                    Preferred Time Slot <span className="text-red-500">*</span>
                   </label>
-                  <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                    {["09:00", "11:00", "13:00", "15:00", "17:00", "19:00"].map((slot) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    {timeSlots.map((slot) => (
                       <button
                         key={slot}
-                        className={`border py-2 text-[10px] font-bold uppercase ${
-                          slot === "13:00"
+                        type="button"
+                        onClick={() => setTime(slot)}
+                        className={`border py-3 text-[11px] font-bold uppercase transition-colors ${
+                          time === slot
                             ? "bg-[#002155] text-white border-[#002155]"
-                            : "border-[#c4c6d3] text-[#1b1c1a]"
+                            : "border-[#c4c6d3] text-[#1b1c1a] hover:border-[#002155] bg-[#f5f4f0]"
                         }`}
                       >
                         {slot}
@@ -205,152 +299,142 @@ export default function FacilityBookingPage() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Step 4 Preview: Confirmation Example */}
-            <div className="bg-white border border-[#c4c6d3] border-l-4 border-l-[#002155] p-10">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <span className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#8c4f00]">
-                    Draft Booking Confirmed
-                  </span>
-                  <h2 className="font-headline text-2xl font-bold text-[#002155]">
-                    Facility Reservation Summary
-                  </h2>
+                {/* Multi Select Equipment */}
+                <div className="space-y-4">
+                  <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
+                    Required Equipment (Optional)
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {availableEquipment.map((eq) => (
+                      <label key={eq} className={`flex items-center gap-3 p-3 border cursor-pointer transition-colors ${equipment.includes(eq) ? 'border-[#002155] bg-blue-50/10' : 'border-[#c4c6d3] hover:bg-[#f5f4f0]'}`}>
+                        <input 
+                          type="checkbox" 
+                          checked={equipment.includes(eq)} 
+                          onChange={() => handleToggleEquipment(eq)} 
+                          className="w-4 h-4 accent-[#002155] rounded-none outline-none border-[#747782]"
+                          style={{ borderRadius: 0 }}
+                        />
+                        <span className={`text-sm ${equipment.includes(eq) ? 'font-bold text-[#002155]' : 'font-medium text-[#434651]'}`}>{eq}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-                <span className="material-symbols-outlined text-4xl text-[#002155]">verified</span>
-              </div>
-              <div className="bg-[#efeeea] p-6 mb-8">
-                <p className="font-['Inter'] text-[10px] uppercase tracking-[0.1rem] text-[#434651] mb-1">
-                  Electronic Booking Reference
-                </p>
-                <p className="font-headline text-4xl font-extrabold text-[#002155] tracking-tighter">
-                  COE-2024-8842-X
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-8 text-sm">
-                <div>
-                  <p className="font-bold text-xs uppercase border-b border-[#c4c6d3] pb-1 mb-2">Resource</p>
-                  <p className="font-body italic text-[#434651]">NVIDIA DGX-A100 Research Node</p>
-                </div>
-                <div>
-                  <p className="font-bold text-xs uppercase border-b border-[#c4c6d3] pb-1 mb-2">Date &amp; Time</p>
-                  <p className="font-body italic text-[#434651]">Oct 24, 2024 | 13:00 - 17:00</p>
-                </div>
-              </div>
-            </div>
-          </section>
 
-          {/* Right Column: Guidelines & Information */}
-          <aside className="lg:col-span-4 space-y-8">
-            {/* Protocol Box */}
-            <div className="bg-[#002155] text-white p-8">
-              <h3 className="font-headline text-xl font-bold mb-4">Institutional Protocol</h3>
-              <ul className="space-y-4 text-sm opacity-90 font-body">
-                <li className="flex gap-3">
-                  <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0">priority_high</span>
-                  <span>Bookings must be made 48 hours in advance for faculty and 72 hours for students.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0">priority_high</span>
-                  <span>Valid institutional ID card is mandatory for entry to all Center of Excellence zones.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0">priority_high</span>
-                  <span>Users are liable for any physical damage to high-precision instrumentation.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Support Contacts */}
-            <div className="border border-[#c4c6d3] p-8 bg-white">
-              <h3 className="font-['Inter'] text-xs font-bold uppercase tracking-widest text-[#002155] mb-6 border-b-2 border-[#002155] pb-2 inline-block">
-                Support Contacts
-              </h3>
-              <div className="space-y-6">
-                <div>
-                  <p className="font-bold text-sm">Lab Superintendent</p>
-                  <p className="text-xs text-[#434651] italic">coe.support@tcetmumbai.in</p>
-                  <p className="text-xs text-[#434651]">+91 22 6730 8000 (Ext: 104)</p>
+                {/* Purpose */}
+                <div className="flex flex-col gap-2">
+                  <label className="font-['Inter'] text-xs font-bold uppercase tracking-wider text-[#434651]">
+                    Purpose of Research / Visit <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    className="w-full bg-white border border-[#747782] focus:border-[#002155] focus:ring-1 focus:ring-[#002155] p-4 text-sm outline-none resize-none min-h-[120px]"
+                    placeholder="Briefly describe the research activity, related grant, or academic purpose."
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    required
+                    style={{ borderRadius: 0 }}
+                  ></textarea>
                 </div>
-                <div className="pt-4 border-t border-[#c4c6d3]">
-                  <p className="font-bold text-sm">System Administrator</p>
-                  <p className="text-xs text-[#434651] italic">sysadmin.coe@tcetmumbai.in</p>
+
+                <div className="pt-8 flex justify-between items-center border-t border-[#c4c6d3]">
+                  <button type="button" onClick={() => setStep(2)} className="text-xs font-bold uppercase tracking-widest text-[#434651] hover:text-[#002155] underline">Back to Profile</button>
+                  <button
+                    type="submit"
+                    disabled={!lab || !date || !time || !purpose}
+                    className="bg-[#002155] disabled:bg-[#c4c6d3] disabled:cursor-not-allowed text-white px-8 py-4 font-['Inter'] text-sm font-bold uppercase tracking-widest hover:bg-[#1a438e] transition-colors inline-flex items-center gap-2"
+                  >
+                    Submit Booking
+                    <span className="material-symbols-outlined text-sm">send</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* STEP 4: CONFIRMATION */}
+          {step === 4 && (
+            <div className="bg-white border border-[#c4c6d3] border-t-8 border-t-[#002155] p-8 md:p-12 text-center animate-fade-in shadow-lg">
+              <div className="w-20 h-20 bg-[#efeef0] text-[#002155] rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="material-symbols-outlined text-4xl">inventory_2</span>
+              </div>
+              <h2 className="font-headline text-3xl font-bold text-[#002155] mb-2">
+                Booking Sent for Approval
+              </h2>
+              <p className="font-['Inter'] text-xs font-bold uppercase tracking-widest text-[#fd9923] mb-8">
+                Reference ID: <span className="text-[#002155] underline">COE-2024-8593-B</span>
+              </p>
+              
+              <div className="bg-[#f5f4f0] border border-[#c4c6d3] p-6 text-left max-w-lg mx-auto mb-8 space-y-4">
+                <div className="grid grid-cols-3 gap-2 border-b border-[#c4c6d3] pb-3">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#747782] col-span-1">Visitor</p>
+                  <p className="text-sm font-bold text-[#002155] col-span-2">{email.split("@")[0].toUpperCase()} ({role})</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 border-b border-[#c4c6d3] pb-3">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#747782] col-span-1">Facility</p>
+                  <p className="text-sm font-bold text-[#002155] col-span-2">{lab}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#747782] col-span-1">Schedule</p>
+                  <p className="text-sm font-bold text-[#002155] col-span-2">{date} <br/> <span className="text-xs font-normal">{time}</span></p>
                 </div>
               </div>
-            </div>
 
-            {/* Illustration Card */}
-            <div className="relative group h-64 overflow-hidden border border-[#c4c6d3]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="Scientific Laboratory"
-                className="w-full h-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9CTmBnB8EFYMBkEe_d1lxq4bF0d9XNKTQfPHUzxpGUoYgLoHcpHshKIKmMOI795oftQ9qlNLB1_Y809JXO4Te3M_KwYAyWgDnTdRvkjiZKA-K7XROR-cmk3njb6DcbMFLwutdBZcUMPkOqjUs8on4LQYx_VfuUE91jUQv-sk2rCG0aj3gFg1o4tvzqhdiivP8KGe1JS17-fuMw3Z-F4pfAovQLL9rrrw98pVyhLgVcFedxPunP6iw7KPuLDxrkF9f8dG8ulvL2zM"
-              />
-              <div className="absolute inset-0 bg-[#002155]/20 group-hover:bg-transparent transition-all"></div>
-              <div className="absolute bottom-4 left-4 right-4 bg-white p-4">
-                <p className="font-['Inter'] text-[10px] font-bold uppercase tracking-widest text-[#002155]">
-                  Featured Facility
-                </p>
-                <p className="font-headline font-bold text-sm">IoT &amp; Embedded Systems Wing</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </main>
+              <p className="text-sm text-[#434651] font-body mb-8 px-4">
+                Your request has been forwarded to the Laboratory Superintendent. You will receive an email notification upon clearance from the administration.
+              </p>
 
-      {/* Footer */}
-      <footer className="bg-[#f5f4f0] border-t-4 border-[#002155] w-full mt-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 w-full px-12 py-16 max-w-full">
-          <div>
-            <h3 className="text-lg font-bold text-[#002155] mb-6 uppercase tracking-widest">Institution</h3>
-            <p className="font-body leading-relaxed text-slate-600 mb-6 text-sm">
-              Thakur College of Engineering and Technology<br />
-              A-Block, Thakur Educational Campus,<br />
-              Shyamnarayan Thakur Marg, Thakur Village,<br />
-              Kandivali (E), Mumbai - 400101
-            </p>
-            <div className="flex gap-4">
-              <span className="material-symbols-outlined text-[#002155] cursor-pointer">social_leaderboard</span>
-              <span className="material-symbols-outlined text-[#002155] cursor-pointer">language</span>
-              <span className="material-symbols-outlined text-[#002155] cursor-pointer">description</span>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-[#002155] mb-6 uppercase tracking-widest">Resources</h3>
-            <ul className="space-y-3">
-              <li><a className="font-body text-sm text-slate-600 hover:text-[#002155] underline" href="#">Institute Address &amp; NAAC</a></li>
-              <li><a className="font-body text-sm text-slate-600 hover:text-[#002155] underline" href="#">Mumbai University</a></li>
-              <li><a className="font-body text-sm text-slate-600 hover:text-[#002155] underline" href="#">Quick Links</a></li>
-              <li><a className="font-body text-sm text-slate-600 hover:text-[#002155] underline" href="#">Privacy Policy</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-[#002155] mb-6 uppercase tracking-widest">Connect</h3>
-            <div className="bg-white p-6 border border-[#c4c6d3]">
-              <p className="text-xs font-bold uppercase tracking-widest mb-4">Inquiry Channel</p>
-              <input
-                className="w-full border border-[#747782] p-3 text-xs mb-3 outline-none focus:border-[#002155]"
-                placeholder="Institutional Email"
-                type="email"
-                style={{ borderRadius: 0 }}
-              />
-              <button className="w-full bg-[#002155] text-white py-3 font-bold uppercase text-[10px] tracking-widest hover:bg-[#1a438e] transition-colors">
-                Submit Request
+              <button
+                onClick={() => {
+                  setStep(1); setOtpSent(false); setOtp(""); setEmail(""); setPurpose(""); setEquipment([]); setDate(""); setTime(""); setLab("");
+                }}
+                className="bg-transparent border-2 border-[#002155] text-[#002155] px-8 py-3 font-['Inter'] text-xs font-bold uppercase tracking-widest hover:bg-[#002155] hover:text-white transition-colors"
+              >
+                Book Another Session
               </button>
             </div>
+          )}
+        </section>
+
+        {/* Right Column: Guidelines & Information */}
+        <aside className="lg:col-span-4 space-y-6 md:space-y-8 h-fit lg:sticky lg:top-[120px]">
+          {/* Protocol Box */}
+          <div className="bg-[#002155] text-white p-6 md:p-8">
+            <h3 className="font-headline text-xl font-bold mb-4">Institutional Protocol</h3>
+            <ul className="space-y-4 text-xs lg:text-sm opacity-90 font-body">
+              <li className="flex gap-3">
+                <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0 text-lg">priority_high</span>
+                <span>Bookings must be made 48 hours in advance for faculty and 72 hours for students.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0 text-lg">admin_panel_settings</span>
+                <span>Only verified users with @tcetmumbai.in domain are granted automated initial clearance.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="material-symbols-outlined text-[#fd9923] flex-shrink-0 text-lg">gavel</span>
+                <span>Users are strictly liable for any physical damage to high-precision instrumentation.</span>
+              </li>
+            </ul>
           </div>
-        </div>
-        <div className="bg-[#002155] py-6 px-12 flex justify-between items-center text-white/70 text-[10px] font-bold uppercase tracking-widest">
-          <span>© 2024 TCET Center of Excellence. All Rights Reserved.</span>
-          <div className="flex gap-8">
-            <a className="hover:text-white transition-colors" href="#">Accessibility</a>
-            <a className="hover:text-white transition-colors" href="#">Legal Archives</a>
+
+          {/* Support Contacts */}
+          <div className="border border-[#c4c6d3] p-6 md:p-8 bg-white shadow-sm">
+            <h3 className="font-['Inter'] text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#002155] mb-5 border-b-2 border-[#002155] pb-2 inline-block">
+              Immediate Support
+            </h3>
+            <div className="space-y-5">
+              <div>
+                <p className="font-bold text-sm text-[#002155]">Lab Superintendent</p>
+                <p className="text-[11px] md:text-xs text-[#434651] italic">coe.support@tcetmumbai.in</p>
+                <p className="text-[11px] md:text-xs font-bold text-[#8c4f00] mt-1">+91 22 6730 8000 (Ext: 104)</p>
+              </div>
+              <div className="pt-4 border-t border-[#dbdad6]">
+                <p className="font-bold text-sm text-[#002155]">System Administrator</p>
+                <p className="text-[11px] md:text-xs text-[#434651] italic">sysadmin.coe@tcetmumbai.in</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </footer>
-    </>
+        </aside>
+      </div>
+    </main>
   );
 }
