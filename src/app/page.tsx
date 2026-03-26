@@ -27,7 +27,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-IN", {
   year: "numeric",
 });
 
-// formatDate is kept here ONLY for grants and events
+// formatDate is kept here as a shared helper for grants, events, and announcements (Expires)
 function formatDate(dateInput: Date | string) {
   const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   return dateFormatter.format(date);
