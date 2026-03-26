@@ -42,6 +42,8 @@ export default function LoginPage() {
       const role = data?.data?.user?.role;
       if (role === "ADMIN") {
         router.push("/admin");
+      } else if (role === "FACULTY") {
+        router.push("/faculty");
       } else {
         router.push("/facility-booking");
       }
