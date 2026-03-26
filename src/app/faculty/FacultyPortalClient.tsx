@@ -49,10 +49,25 @@ const eventModes = ["ONLINE", "OFFLINE", "HYBRID"] as const;
 const grantCategories = ["GOVT_GRANT", "SCHOLARSHIP", "RESEARCH_FUND", "INDUSTRY_GRANT"] as const;
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(url, {
-    ...options,
-    credentials: "include",
-  });
+  const doFetch = async () => {
+    return fetch(url, {
+      ...options,
+      credentials: "include",
+    });
+  };
+
+  let res = await doFetch();
+
+  if (res.status === 401) {
+    const refreshRes = await fetch("/api/auth/refresh", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (refreshRes.ok) {
+      res = await doFetch();
+    }
+  }
 
   const payload = (await res.json()) as ApiEnvelope<T>;
   if (!res.ok || !payload?.success) {
