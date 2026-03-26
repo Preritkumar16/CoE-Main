@@ -127,9 +127,10 @@ export default async function AdminPage() {
   }
 
   try {
-    const [stats, pendingBookings, pendingFaculty, users] = await Promise.all([
+    const [stats, pendingBookings, upcomingConfirmedBookings, pendingFaculty, users] = await Promise.all([
       fetchAdmin<Stats>("/api/admin/stats", token),
       fetchAdmin<Booking[]>("/api/admin/bookings?status=PENDING", token),
+      fetchAdmin<Booking[]>("/api/admin/bookings?status=CONFIRMED", token),
       fetchAdmin<AdminUser[]>("/api/admin/users?role=FACULTY&status=PENDING", token),
       fetchAdmin<AdminUser[]>("/api/admin/users", token),
     ]);
@@ -138,6 +139,7 @@ export default async function AdminPage() {
       <AdminPanelClient
         stats={stats}
         pendingBookings={pendingBookings}
+        upcomingConfirmedBookings={upcomingConfirmedBookings}
         pendingFaculty={pendingFaculty}
         users={users}
       />

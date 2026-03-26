@@ -47,6 +47,7 @@ type Stats = {
 type AdminPanelClientProps = {
   stats: Stats;
   pendingBookings: Booking[];
+  upcomingConfirmedBookings: Booking[];
   pendingFaculty: FacultyUser[];
   users: FacultyUser[];
 };
@@ -71,6 +72,7 @@ const apiCall = async (url: string, options?: RequestInit) => {
 export default function AdminPanelClient({
   stats,
   pendingBookings,
+  upcomingConfirmedBookings,
   pendingFaculty,
   users,
 }: AdminPanelClientProps) {
@@ -82,6 +84,20 @@ export default function AdminPanelClient({
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const recentUsers = useMemo(() => users.slice(0, 12), [users]);
+  const prepBookings = useMemo(() => {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    return upcomingConfirmedBookings
+      .filter((booking) => new Date(booking.date) >= todayStart)
+      .sort((a, b) => {
+        const aTime = new Date(a.date).getTime();
+        const bTime = new Date(b.date).getTime();
+        if (aTime !== bTime) return aTime - bTime;
+        return a.timeSlot.localeCompare(b.timeSlot);
+      })
+      .slice(0, 20);
+  }, [upcomingConfirmedBookings]);
 
   const handleConfirmBooking = async (id: number) => {
     try {
@@ -195,6 +211,45 @@ export default function AdminPanelClient({
           <p className="text-xs uppercase tracking-widest text-[#434651] font-label">Visible News Posts</p>
           <p className="mt-2 text-3xl font-bold text-[#002155]">{stats.newsCount}</p>
         </div>
+      </section>
+
+      <section className="mb-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-headline text-2xl text-[#002155]">Upcoming Confirmed Bookings</h2>
+          <span className="text-xs uppercase tracking-widest text-[#434651] font-label">
+            {prepBookings.length} upcoming
+          </span>
+        </div>
+
+        {prepBookings.length === 0 ? (
+          <p className="border border-dashed border-[#c4c6d3] bg-white p-6 text-[#434651]">No upcoming confirmed bookings.</p>
+        ) : (
+          <div className="space-y-4">
+            {prepBookings.map((booking) => (
+              <article key={booking.id} className="border border-[#c4c6d3] bg-white p-5">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-bold text-[#002155]">
+                      #{booking.id} • {booking.lab} • {new Date(booking.date).toLocaleDateString()} • {booking.timeSlot}
+                    </p>
+                    <p className="mt-1 text-xs text-[#434651]">
+                      Student: {booking.student.name} ({booking.student.email})
+                    </p>
+                    <p className="mt-1 text-sm text-[#434651]">{booking.purpose}</p>
+                    {booking.facilities?.length ? (
+                      <p className="mt-1 text-xs text-[#434651]">Preparation checklist: {booking.facilities.join(", ")}</p>
+                    ) : (
+                      <p className="mt-1 text-xs text-[#434651]">Preparation checklist: No extra facilities requested.</p>
+                    )}
+                  </div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-green-700 border border-green-200 bg-green-50 px-3 py-2 h-fit">
+                    Confirmed
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mb-10">
