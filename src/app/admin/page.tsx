@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import AdminPanelClient from "./AdminPanelClient";
 import { verifyAccessToken } from "@/lib/jwt";
 
@@ -61,16 +61,31 @@ type HeroSlide = {
   updatedAt: string;
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+function getRequestBaseUrl(headerStore: Headers): string {
+  const host = headerStore.get("x-forwarded-host") || headerStore.get("host");
+  const proto = headerStore.get("x-forwarded-proto") || "http";
 
-async function fetchAdmin<T>(path: string, token: string): Promise<T> {
-  const res = await fetch(`${baseUrl}${path}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
+  if (host) {
+    return `${proto}://${host}`;
+  }
+
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
+
+async function fetchAdmin<T>(baseUrl: string, path: string, token: string): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${baseUrl}${path}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "Network request failed";
+    throw new Error(`Request to ${path} failed: ${reason}`);
+  }
 
   const payload = (await res.json()) as AdminApiResponse<T>;
   if (!res.ok || !payload?.success) {
@@ -101,6 +116,8 @@ function AdminMessage({ title, body, actionLabel, actionHref }: { title: string;
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
+  const headerStore = await headers();
+  const baseUrl = getRequestBaseUrl(headerStore);
   const token = cookieStore.get("accessToken")?.value;
 
   if (!token) {
@@ -139,12 +156,12 @@ export default async function AdminPage() {
 
   try {
     const [stats, pendingBookings, upcomingConfirmedBookings, pendingFaculty, users, heroSlides] = await Promise.all([
-      fetchAdmin<Stats>("/api/admin/stats", token),
-      fetchAdmin<Booking[]>("/api/admin/bookings?status=PENDING", token),
-      fetchAdmin<Booking[]>("/api/admin/bookings?status=CONFIRMED", token),
-      fetchAdmin<AdminUser[]>("/api/admin/users?role=FACULTY&status=PENDING", token),
-      fetchAdmin<AdminUser[]>("/api/admin/users", token),
-      fetchAdmin<HeroSlide[]>("/api/hero-slides", token),
+      fetchAdmin<Stats>(baseUrl, "/api/admin/stats", token),
+      fetchAdmin<Booking[]>(baseUrl, "/api/admin/bookings?status=PENDING", token),
+      fetchAdmin<Booking[]>(baseUrl, "/api/admin/bookings?status=CONFIRMED", token),
+      fetchAdmin<AdminUser[]>(baseUrl, "/api/admin/users?role=FACULTY&status=PENDING", token),
+      fetchAdmin<AdminUser[]>(baseUrl, "/api/admin/users", token),
+      fetchAdmin<HeroSlide[]>(baseUrl, "/api/hero-slides", token),
     ]);
 
     return (
