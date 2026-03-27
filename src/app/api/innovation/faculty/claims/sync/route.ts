@@ -85,7 +85,7 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    const allowedStates = stage === 'SCREENING' ? ['SUBMITTED', 'REVISION_REQUESTED'] : ['SHORTLISTED'];
+    const allowedStates = stage === 'SCREENING' ? ['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED'] : ['SHORTLISTED'];
     const invalidState = claims.find((claim) => !allowedStates.includes(claim.status));
     if (invalidState) {
       return errorRes(

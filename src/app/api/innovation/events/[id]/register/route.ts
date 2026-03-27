@@ -141,7 +141,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const updated = await prisma.claim.update({
       where: { id: claim.id },
-      data: { submissionFileKey: fileKey },
+      data: {
+        submissionFileKey: fileKey,
+        status: 'SUBMITTED',
+      },
       include: {
         members: {
           include: {

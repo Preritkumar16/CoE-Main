@@ -166,7 +166,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
     const map = new Map<number, { id: number; title: string }>();
     submissions.forEach((submission) => {
       if (!submission.problem.event) return;
-      if (!['SUBMITTED', 'REVISION_REQUESTED', 'SHORTLISTED'].includes(submission.status)) return;
+      if (!['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED', 'SHORTLISTED'].includes(submission.status)) return;
       map.set(submission.problem.event.id, {
         id: submission.problem.event.id,
         title: submission.problem.event.title,
@@ -180,7 +180,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
       submissions.filter(
         (submission) =>
           submission.problem.event &&
-          ['SUBMITTED', 'REVISION_REQUESTED'].includes(submission.status) &&
+          ['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED'].includes(submission.status) &&
           (selectedSubmissionEventId === null || submission.problem.event.id === selectedSubmissionEventId)
       ),
     [submissions, selectedSubmissionEventId]
@@ -201,7 +201,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
     () =>
       new Set(
         submissions
-          .filter((submission) => submission.problem.event && ['SUBMITTED', 'REVISION_REQUESTED', 'SHORTLISTED'].includes(submission.status))
+          .filter((submission) => submission.problem.event && ['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED', 'SHORTLISTED'].includes(submission.status))
           .map((submission) => submission.id)
       ),
     [submissions]
@@ -277,7 +277,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
   );
 
   const reviewableScreeningCountForSelectedRegistrationEvent = useMemo(
-    () => selectedEventRegistrations.filter((registration) => ['SUBMITTED', 'REVISION_REQUESTED'].includes(registration.status)).length,
+    () => selectedEventRegistrations.filter((registration) => ['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED'].includes(registration.status)).length,
     [selectedEventRegistrations]
   );
 
@@ -445,7 +445,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
   const syncScreeningForEvent = async (eventId: number) => {
     const eventSubmissions = submissions.filter(
       (submission) =>
-        submission.problem.event?.id === eventId && ['SUBMITTED', 'REVISION_REQUESTED'].includes(submission.status)
+        submission.problem.event?.id === eventId && ['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED'].includes(submission.status)
     );
 
     if (eventSubmissions.length === 0) {
@@ -483,6 +483,36 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
         return next;
       });
     }, 'PPT screening synced and teams notified about shortlist/rejection.');
+  };
+
+  const syncSingleScreeningDecision = async (submission: SubmissionRow, status: ScreeningDecisionStatus) => {
+    const eventId = submission.problem.event?.id;
+    if (!eventId) {
+      setErrorMessage('This submission is not linked to a hackathon event.');
+      return;
+    }
+
+    await runAction(async () => {
+      await fetchJson('/api/innovation/faculty/claims/sync', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          stage: 'SCREENING',
+          eventId,
+          decisions: [
+            {
+              claimId: submission.id,
+              status,
+            },
+          ],
+        }),
+      });
+
+      setStagedDecisions((prev) => {
+        const next = { ...prev };
+        delete next[submission.id];
+        return next;
+      });
+    }, status === 'SHORTLISTED' ? 'Team approved and moved to judging shortlist.' : 'Team rejected from PPT screening.');
   };
 
   const syncJudgingForEvent = async (eventId: number) => {
@@ -545,6 +575,54 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
         return next;
       });
     }, 'Final judging synced and rubric score emails sent to teams.');
+  };
+
+  const syncSingleJudgingDecision = async (submission: SubmissionRow, status: JudgingDecisionStatus) => {
+    const eventId = submission.problem.event?.id;
+    if (!eventId) {
+      setErrorMessage('This submission is not linked to a hackathon event.');
+      return;
+    }
+
+    const eventMeta = events.find((event) => event.id === eventId);
+    if (eventMeta?.status !== 'JUDGING') {
+      setErrorMessage('Move the event to JUDGING status before finalizing a specific team.');
+      return;
+    }
+
+    const rubric = stagedRubrics[submission.id] || getRubricsFromSubmission(submission);
+    if (!isRubricComplete(rubric)) {
+      setErrorMessage('Fill all rubric scores (0-10) before finalizing this team.');
+      return;
+    }
+
+    await runAction(async () => {
+      await fetchJson('/api/innovation/faculty/claims/sync', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          stage: 'JUDGING',
+          eventId,
+          decisions: [
+            {
+              claimId: submission.id,
+              status,
+              rubrics: rubric,
+            },
+          ],
+        }),
+      });
+
+      setStagedDecisions((prev) => {
+        const next = { ...prev };
+        delete next[submission.id];
+        return next;
+      });
+      setStagedRubrics((prev) => {
+        const next = { ...prev };
+        delete next[submission.id];
+        return next;
+      });
+    }, status === 'ACCEPTED' ? 'Team approved in final judging.' : 'Team rejected in final judging.');
   };
 
   const syncScreeningDecisions = async () => {
@@ -702,14 +780,14 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
             Members: {registration.members.map((member) => `${member.user.name}${member.user.uid ? ` (${member.user.uid})` : ''}`).join(', ')}
           </p>
         </div>
-        {['SUBMITTED', 'REVISION_REQUESTED'].includes(registration.status) ? (
+        {['IN_PROGRESS', 'SUBMITTED', 'REVISION_REQUESTED'].includes(registration.status) ? (
           <div className="flex flex-wrap gap-2 md:justify-end">
             <button
               onClick={() => stageDecision(registration.id, 'SHORTLISTED')}
               className={`px-3 py-2 text-xs font-bold uppercase tracking-wider border ${stagedDecisions[registration.id] === 'SHORTLISTED' ? 'bg-[#0b6b2e] text-white border-[#0b6b2e]' : 'bg-white text-[#0b6b2e] border-[#0b6b2e]'}`}
               disabled={loading}
             >
-              Shortlist
+              Approve
             </button>
             <button
               onClick={() => stageDecision(registration.id, 'REJECTED')}
@@ -717,6 +795,13 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
               disabled={loading}
             >
               Reject
+            </button>
+            <button
+              onClick={() => void syncSingleScreeningDecision(registration, 'SHORTLISTED')}
+              className="px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[#002155] text-[#002155] bg-white"
+              disabled={loading}
+            >
+              Start Judging
             </button>
           </div>
         ) : registration.status === 'SHORTLISTED' ? (
@@ -734,6 +819,20 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
               disabled={loading}
             >
               Final Reject
+            </button>
+            <button
+              onClick={() => void syncSingleJudgingDecision(registration, 'ACCEPTED')}
+              className="px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[#0b6b2e] text-[#0b6b2e] bg-white"
+              disabled={loading}
+            >
+              Approve Team
+            </button>
+            <button
+              onClick={() => void syncSingleJudgingDecision(registration, 'REJECTED')}
+              className="px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[#ba1a1a] text-[#ba1a1a] bg-white"
+              disabled={loading}
+            >
+              Reject Team
             </button>
           </div>
         ) : null}
@@ -880,7 +979,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
           ) : (
             <div className="space-y-4">
               {submissionsForDisplay.map((submission) => {
-                const canScreen = submission.status === 'SUBMITTED' || submission.status === 'REVISION_REQUESTED';
+                const canScreen = submission.status === 'IN_PROGRESS' || submission.status === 'SUBMITTED' || submission.status === 'REVISION_REQUESTED';
                 const canJudge = submission.status === 'SHORTLISTED';
                 const isHackathonSubmission = !!submission.problem.event;
                 const staged = stagedDecisions[submission.id] || null;
@@ -924,7 +1023,7 @@ export default function InnovationFacultyClient({ role, userId }: InnovationFacu
                               className={`px-3 py-2 text-xs font-bold uppercase tracking-wider border ${staged === 'SHORTLISTED' ? 'bg-[#0b6b2e] text-white border-[#0b6b2e]' : 'bg-white text-[#0b6b2e] border-[#0b6b2e]'}`}
                               disabled={loading}
                             >
-                              Shortlist
+                              Approve
                             </button>
                             <button
                               onClick={() => stageDecision(submission.id, 'REJECTED')}
