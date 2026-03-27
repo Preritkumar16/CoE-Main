@@ -145,7 +145,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mb-14">
+        <section id="news" className="mb-14">
           <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-6 flex justify-between items-end">
             <div>
               <h2 className="font-headline text-2xl sm:text-3xl text-[#002155] tracking-tight">
@@ -167,7 +167,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mb-14">
+        <section id="grants" className="mb-14">
           <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-6">
             <h2 className="text-2xl sm:text-3xl font-headline tracking-tight text-[#002155]">
               Current Grant Opportunities
@@ -232,7 +232,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mb-10">
+        <section id="events" className="mb-10">
           <div className="border-l-4 border-[#002155] pl-4 md:pl-6 mb-6">
             <h2 className="text-2xl sm:text-3xl font-headline tracking-tight text-[#002155]">
               Upcoming Events
@@ -352,6 +352,22 @@ export default async function HomePage() {
                 </span>
                 <h5 className="text-xs font-bold text-[#002155] uppercase">
                   Publish Content
+                </h5>
+              </div>
+              <span className="material-symbols-outlined text-[#8c4f00] mr-2 group-hover:translate-x-1 transition-transform">
+                arrow_forward
+              </span>
+            </Link>
+            <Link
+              href="/innovation"
+              className="border-l-2 border-[#8c4f00] pl-4 py-2 bg-white border border-[#c4c6d3] flex items-center justify-between group"
+            >
+              <div>
+                <span className="text-[9px] font-bold text-[#747782] uppercase tracking-widest">
+                  Innovation Hub
+                </span>
+                <h5 className="text-xs font-bold text-[#002155] uppercase">
+                  Problems & Hackathons
                 </h5>
               </div>
               <span className="material-symbols-outlined text-[#8c4f00] mr-2 group-hover:translate-x-1 transition-transform">

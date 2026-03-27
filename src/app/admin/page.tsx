@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
 import AdminPanelClient from "./AdminPanelClient";
 import { verifyAccessToken } from "@/lib/jwt";
 
@@ -59,6 +60,26 @@ type HeroSlide = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+type InnovationSubmission = {
+  id: number;
+  teamName: string | null;
+  status: string;
+  updatedAt: string;
+  problem: {
+    id: number;
+    title: string;
+    event: { id: number; title: string; status: string } | null;
+  };
+};
+
+type InnovationEvent = {
+  id: number;
+  title: string;
+  status: 'UPCOMING' | 'ACTIVE' | 'JUDGING' | 'CLOSED';
+  startTime: string;
+  endTime: string;
 };
 
 function getRequestBaseUrl(headerStore: Headers): string {
@@ -121,59 +142,41 @@ export default async function AdminPage() {
   const token = cookieStore.get("accessToken")?.value;
 
   if (!token) {
-    return (
-      <AdminMessage
-        title="Admin Access Required"
-        body="Please login with an admin account to continue."
-        actionLabel="Go to Login"
-        actionHref="/login"
-      />
-    );
+    redirect("/login?next=%2Fadmin");
   }
 
+  let payload;
   try {
-    const payload = verifyAccessToken(token);
-    if (payload.role !== "ADMIN") {
-      return (
-        <AdminMessage
-          title="Insufficient Permissions"
-          body="Your account does not have admin access."
-          actionLabel="Go to Login"
-          actionHref="/login"
-        />
-      );
-    }
+    payload = verifyAccessToken(token);
   } catch {
-    return (
-      <AdminMessage
-        title="Session Expired"
-        body="Your session has expired. Please login again."
-        actionLabel="Go to Login"
-        actionHref="/login"
-      />
-    );
+    redirect("/login?next=%2Fadmin");
   }
 
+  if (payload.role !== "ADMIN") {
+    if (payload.role === "FACULTY") redirect("/faculty");
+    redirect("/facility-booking");
+  }
+
+  let stats: Stats;
+  let pendingBookings: Booking[];
+  let upcomingConfirmedBookings: Booking[];
+  let pendingFaculty: AdminUser[];
+  let users: AdminUser[];
+  let heroSlides: HeroSlide[];
+  let innovationSubmissions: InnovationSubmission[];
+  let innovationEvents: InnovationEvent[];
+
   try {
-    const [stats, pendingBookings, upcomingConfirmedBookings, pendingFaculty, users, heroSlides] = await Promise.all([
+    [stats, pendingBookings, upcomingConfirmedBookings, pendingFaculty, users, heroSlides, innovationSubmissions, innovationEvents] = await Promise.all([
       fetchAdmin<Stats>(baseUrl, "/api/admin/stats", token),
       fetchAdmin<Booking[]>(baseUrl, "/api/admin/bookings?status=PENDING", token),
       fetchAdmin<Booking[]>(baseUrl, "/api/admin/bookings?status=CONFIRMED", token),
       fetchAdmin<AdminUser[]>(baseUrl, "/api/admin/users?role=FACULTY&status=PENDING", token),
       fetchAdmin<AdminUser[]>(baseUrl, "/api/admin/users", token),
       fetchAdmin<HeroSlide[]>(baseUrl, "/api/hero-slides", token),
+      fetchAdmin<InnovationSubmission[]>(baseUrl, "/api/innovation/admin/submissions", token),
+      fetchAdmin<InnovationEvent[]>(baseUrl, "/api/innovation/events", token),
     ]);
-
-    return (
-      <AdminPanelClient
-        stats={stats}
-        pendingBookings={pendingBookings}
-        upcomingConfirmedBookings={upcomingConfirmedBookings}
-        pendingFaculty={pendingFaculty}
-        users={users}
-        heroSlides={heroSlides}
-      />
-    );
   } catch (err) {
     return (
       <main className="max-w-3xl mx-auto px-4 md:px-8 pt-[120px] pb-12 min-h-screen">
@@ -186,4 +189,17 @@ export default async function AdminPage() {
       </main>
     );
   }
+
+  return (
+    <AdminPanelClient
+      stats={stats}
+      pendingBookings={pendingBookings}
+      upcomingConfirmedBookings={upcomingConfirmedBookings}
+      pendingFaculty={pendingFaculty}
+      users={users}
+      heroSlides={heroSlides}
+      innovationSubmissions={innovationSubmissions}
+      innovationEvents={innovationEvents}
+    />
+  );
 }
