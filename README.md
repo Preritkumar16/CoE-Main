@@ -156,12 +156,12 @@ flowchart TD
 ```mermaid
 sequenceDiagram
   participant S as Student Team
-  participant E as /api/innovation/events/[id]/register
+  participant E as /api/innovation/events/:id/register
   participant DB as Prisma DB
   participant F as Faculty Workspace
   participant SY as /api/innovation/faculty/claims/sync
   participant M as Mailer
-  participant L as /api/innovation/events/[id]/leaderboard
+  participant L as /api/innovation/events/:id/leaderboard
 
   S->>E: Register team + upload PPT
   E->>DB: Create claim + upload file + set status SUBMITTED
@@ -236,10 +236,10 @@ Navigation and access behavior:
 
 ```mermaid
 flowchart LR
-  IH[/innovation/] --> ED[/innovation/events/[id]/]
+  IH[innovation landing page (/innovation)] --> ED[event detail page (/innovation/events/:id)]
   ED --> RF[Register Team form\nStudent only]
   ED --> LB[Leaderboard\nvisible in JUDGING or CLOSED]
-  IF[/innovation/faculty/] --> ET[Events tab]
+  IF[faculty workspace (/innovation/faculty)] --> ET[Events tab]
   IF --> ST[Submissions tab]
   ET --> TM[Registered Teams view\nPending, Shortlisted, Approved, Rejected]
   ST --> SC[Stage 1: PPT screening actions]
