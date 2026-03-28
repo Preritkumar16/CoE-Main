@@ -34,6 +34,8 @@ export default function LaboratoryPage() {
       imageUrl:
         "https://lh3.googleusercontent.com/aida-public/AB6AXuBhoT1SdZZYyvVB7pZ01EbLd_ybTFnomxautcchnI1YaNhLR3ATcfvIk9rV_S0DzDLTYVJBfS3q_AtaAQPzCdMRt2iMks5Pf9nld3T9Tna1dEs5FIs4LAmEbSWN31CXyxxrUWvLPbOpjmdr6TDlSAZ5mKLdocKNhqmUPm1bGP74NgLeT4KtcwxTEv3ca8TB9dwOGrGyx0vxHtR4n7DIZCp1yxPtq4ssjOdaSI2uQrJIUQRk36efMx5tLkd-E-JDOOKl1iRW5wZuw-M",
       specs: [
+        { key: "CPU", value: "Intel Core i7-14700 (14th Gen)" },
+        { key: "Clock Speed", value: "Up to 5.4 GHz" },
         { key: "RAM", value: "32 GB" },
         { key: "Storage", value: "1 TB SSD" },
         { key: "Monitor", value: "24''" },
@@ -50,6 +52,8 @@ export default function LaboratoryPage() {
       imageUrl:
         "https://lh3.googleusercontent.com/aida-public/AB6AXuAtZsCIDkxEcZaGGO4P6OhC7AEkY-d9qnaeizUsxOcMWqMcxN-xyWoxn9wl3vhFlw7a0mkLdZQGL6-7Ayk6yyQ0EdcA-Bd-osNCUkMVat6K68bnu2LP_uxvOXw4VOq5dZrnovEslGpF4MTyAuiK9JuLrzk3Le_ea7AZlcT5Fo7_1X6CRHh2C5_FVPtT4s9Tpi2l57VSlmAYRlgexhBbDJt1vD5g7YwZHYH8DNxhrLt0cJGWqjKY3XhDm3FiDEvGuRaz1jrg0-DhKyg",
       specs: [
+        { key: "CPU", value: "Intel Core i7 (12th Gen)" },
+        { key: "Clock Speed", value: "Up to 4.9 GHz" },
         { key: "RAM", value: "16 GB" },
         { key: "Storage", value: "512 GB SSD" },
         { key: "Monitor", value: "19.5''" },
